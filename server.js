@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import vacanciesRoutes from './routes/vacancies.js';
 
 // App Config
 dotenv.config();
@@ -21,6 +22,9 @@ mongoose
   });
 
 // API Endpoints
+app.use('/api/vacancies', vacanciesRoutes);
+
+// Test Endpoint
 app.get('/', (req, res) =>
   res.status(200).send('Hello from Job Search App Server')
 );
