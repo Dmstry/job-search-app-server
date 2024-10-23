@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import vacanciesRoutes from './routes/vacancies.js';
+import cors from 'cors';
 
 // App Config
 dotenv.config();
@@ -9,6 +10,7 @@ const app = express();
 const port = process.env.PORT || 8001;
 
 // Middleware
+app.use(cors());
 app.use(express.json());
 
 // DB Config
