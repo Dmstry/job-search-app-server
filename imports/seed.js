@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import Vacancy from './models/Vacancy.js';
-import vacancyData from './vacancy_seed_data.json' assert { type: 'json' };
+import Vacancy from '../models/Vacancy.js';
+import vacancyData from '../data/vacancies.json' assert { type: 'json' };
 
-dotenv.config();
+dotenv.config({
+  path: '../.env',
+});
 
 mongoose
   .connect(process.env.MONGO_URI)

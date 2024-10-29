@@ -131,3 +131,4 @@ dist
 
 # Seed data
 vacancy_seed_data.json
+/server/data/*
