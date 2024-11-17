@@ -1,6 +1,7 @@
 // routes/vacancies.js
 import express from 'express';
 import Vacancy from '../models/Vacancy.js';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 
@@ -96,6 +97,59 @@ router.post('/', async (req, res) => {
     res.status(201).json(savedVacancy);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+});
+
+// @route   GET /api/vacancies/:id
+// @desc    Get a single vacancy
+router.get('/:id', async (req, res) => {
+  try {
+    const vacancy = await Vacancy.aggregate([
+      {
+        $match: { _id: new mongoose.Types.ObjectId(req.params.id) }
+      },
+      {
+        $lookup: {
+          from: 'positions',
+          localField: 'title',
+          foreignField: '_id',
+          as: 'titleDetails'
+        }
+      },
+      {
+        $lookup: {
+          from: 'localities',
+          localField: 'location',
+          foreignField: '_id',
+          as: 'locationDetails'
+        }
+      },
+      {
+        $lookup: {
+          from: 'employers',
+          localField: 'employer',
+          foreignField: '_id',
+          as: 'employerDetails'
+        }
+      },
+      {
+        $unwind: '$titleDetails'
+      },
+      {
+        $unwind: '$locationDetails'
+      },
+      {
+        $unwind: '$employerDetails'
+      }
+    ]);
+
+    if (!vacancy.length) {
+      return res.status(404).json({ message: 'Vacancy not found' });
+    }
+
+    res.json(vacancy[0]);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 

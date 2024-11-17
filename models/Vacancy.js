@@ -66,7 +66,7 @@ const vacancySchema = new mongoose.Schema({
   },
   experience: {
     type: String, // Кількість досвіду
-    enum: ['півроку-рік', '2 роки', '3 роки', '3+'],
+    enum: ['1 рік', '2 роки', '3 роки', '3+ років'],
     default: null,
   },
   contactDetails: {
