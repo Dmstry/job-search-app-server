@@ -57,7 +57,7 @@ const vacancySchema = new mongoose.Schema({
   },
   educationDegree: {
     type: String, // Ступінь освіти, якщо є вища освіта
-    enum: ['Молодший спеціаліст', 'Бакалавр', 'Магістр'],
+    enum: ['Молодший спеціаліст', 'Бакалавр', 'Магістр', null],
     default: null,
   },
   hasExperience: {
@@ -66,7 +66,7 @@ const vacancySchema = new mongoose.Schema({
   },
   experience: {
     type: String, // Кількість досвіду
-    enum: ['1 рік', '2 роки', '3 роки', '3+ років'],
+    enum: ['1 рік', '2 роки', '3 роки', '3+ років', null],
     default: null,
   },
   contactDetails: {

@@ -91,12 +91,23 @@ router.get('/', async (req, res) => {
 // @route   POST /api/vacancies
 // @desc    Create a new vacancy
 router.post('/', async (req, res) => {
-  const newVacancy = new Vacancy(req.body);
   try {
+    const vacancyData = {
+      ...req.body,
+      educationDegree: req.body.hasHigherEducation
+        ? req.body.educationDegree
+        : null,
+      experience: req.body.hasExperience ? req.body.experience : null,
+    };
+
+    const newVacancy = new Vacancy(vacancyData);
     const savedVacancy = await newVacancy.save();
     res.status(201).json(savedVacancy);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({
+      message: error.message,
+      details: error.errors,
+    });
   }
 });
 
@@ -106,41 +117,41 @@ router.get('/:id', async (req, res) => {
   try {
     const vacancy = await Vacancy.aggregate([
       {
-        $match: { _id: new mongoose.Types.ObjectId(req.params.id) }
+        $match: { _id: new mongoose.Types.ObjectId(req.params.id) },
       },
       {
         $lookup: {
           from: 'positions',
           localField: 'title',
           foreignField: '_id',
-          as: 'titleDetails'
-        }
+          as: 'titleDetails',
+        },
       },
       {
         $lookup: {
           from: 'localities',
           localField: 'location',
           foreignField: '_id',
-          as: 'locationDetails'
-        }
+          as: 'locationDetails',
+        },
       },
       {
         $lookup: {
           from: 'employers',
           localField: 'employer',
           foreignField: '_id',
-          as: 'employerDetails'
-        }
+          as: 'employerDetails',
+        },
       },
       {
-        $unwind: '$titleDetails'
+        $unwind: '$titleDetails',
       },
       {
-        $unwind: '$locationDetails'
+        $unwind: '$locationDetails',
       },
       {
-        $unwind: '$employerDetails'
-      }
+        $unwind: '$employerDetails',
+      },
     ]);
 
     if (!vacancy.length) {
