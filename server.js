@@ -2,6 +2,9 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import vacanciesRoutes from './routes/vacancies.js';
+import positionsRoutes from './routes/positions.js';
+import employersRoutes from './routes/employers.js';
+import localitiesRoutes from './routes/localities.js';
 import cors from 'cors';
 
 // App Config
@@ -25,6 +28,9 @@ mongoose
 
 // API Endpoints
 app.use('/api/vacancies', vacanciesRoutes);
+app.use('/api/positions', positionsRoutes);
+app.use('/api/employers', employersRoutes);
+app.use('/api/localities', localitiesRoutes);
 
 // Test Endpoint
 app.get('/', (req, res) =>
