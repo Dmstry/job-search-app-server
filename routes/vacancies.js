@@ -8,10 +8,22 @@ const router = express.Router();
 // @route   GET /api/vacancies
 // @desc    Get all vacancies
 router.get('/', async (req, res) => {
-  const { page = 1, limit = 18 } = req.query;
+  const { page = 1, limit = 18, sort = 'date_desc' } = req.query;
   const numericLimit = parseInt(limit, 10);
 
   try {
+    // Define sort object based on the sort query parameter
+    let sortObj = {};
+    if (sort === 'salary_asc') {
+      sortObj = { salary: 1, postedDate: -1 };
+    } else if (sort === 'salary_desc') {
+      sortObj = { salary: -1, postedDate: -1 };
+    } else if (sort === 'date_asc') {
+      sortObj = { postedDate: 1 };
+    } else {
+      sortObj = { postedDate: -1 };
+    }
+
     const vacancies = await Vacancy.aggregate([
       {
         $lookup: {
@@ -56,9 +68,7 @@ router.get('/', async (req, res) => {
         },
       },
       {
-        $sort: {
-          postedDate: -1, // Сортування за спаданням дати публікації
-        },
+        $sort: sortObj,
       },
       {
         $skip: (page - 1) * numericLimit,
