@@ -12,6 +12,27 @@ router.get('/', async (req, res) => {
   const numericLimit = parseInt(limit, 10);
 
   try {
+    const filter = {};
+
+    if (req.query.title) {
+      filter['title'] = new mongoose.Types.ObjectId(req.query.title);
+    }
+
+    if (req.query.territorialCommunity) {
+      filter['locationDetails.territorialCommunity'] =
+        req.query.territorialCommunity;
+    }
+
+    if (req.query.hasHigherEducation === 'true') {
+      filter['hasHigherEducation'] = true;
+    } else if (req.query.hasHigherEducation === 'false') {
+      filter['hasHigherEducation'] = false;
+    }
+
+    if (req.query.noExperienceRequired === 'true') {
+      filter['hasExperience'] = false;
+    }
+
     // Define sort object based on the sort query parameter
     let sortObj = {};
     if (sort === 'salary_asc') {
@@ -68,6 +89,9 @@ router.get('/', async (req, res) => {
         },
       },
       {
+        $match: filter,
+      },
+      {
         $sort: sortObj,
       },
       {
@@ -85,6 +109,7 @@ router.get('/', async (req, res) => {
           responsibilities: 1,
           'titleDetails.shortName': 1,
           'locationDetails.locality': 1,
+          'locationDetails.territorialCommunity': 1,
           'employerDetails.shortName': 1,
         },
       },
